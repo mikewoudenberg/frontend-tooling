@@ -1,0 +1,1492 @@
+# JS tooling
+Gert Hengeveld<br >
+Ruben Oostinga
+
+https://twitter.com/GHengeveld
+https://twitter.com/rubenoostinga
+
+![Logo Xebia](img/logo-xebia.png)
+
+---
+
+### Introduce yourself
+
+- What is your name?
+- What is your current front-end experience?
+- What do you want to get out of this course?
+
+---
+
+### Programme
+- History of module bundling / loading
+- webpack
+- prettier
+- eslint
+- CSS modules
+- postCSS
+  - stylelint
+  - Other transforms
+- Jest
+- Storybook
+- 
+
+Note:
+- History also compares tools
+- Lots of cool tools today
+- try to see if you can use it on your projects
+- Linting makes you more productive
+
+---
+
+### Concepts to understand
+
+- JS bundles
+- Minification
+- JS dependencies
+- Modules
+
+Note:
+- JS bundle:
+  - Concatenation of JS files
+  - Faster to load than separate files
+- Minification:
+  - Shortens all variables names
+  - Removes whitespace
+  - Other optimizes for minimal filesize
+  - Goal: load fast in browser
+- JS dependencies
+  - You can put all javascript in a single file
+  - Too big -> split it up
+  - Split up files need to run in a specific order
+  - Code depends on other code
+  - Example:
+    - Angular module declaration should run before you add controllers / directives to that angular module
+- Modules:
+  - JS file with private scope
+  - By default vars declarations are global
+  - Wrapping code in a function makes it a module
+  - Immediately-Invoked Function Expression (IIFE)
+
+vvv
+
+### Immediately-Invoked Function Expression (IIFE)
+``` javascript
+var counter = (function(){
+  var i = 0;
+  return {
+    get: function(){
+      return i;
+    },
+    set: function( val ){
+      i = val;
+    },
+    increment: function() {
+      return ++i;
+    }
+  };
+}());
+```
+
+Note:
+- Has anyone used this?
+- Example of a classic JS module
+- There are others:
+  - AMD
+  - CommonJS: like NodeJS
+  - ES6: JS standard modules
+- Function is invoked immediately
+- `var i` is locally scoped
+- a public API is exposed:
+  - `get`, `set`, `increment`
+
+---
+
+### What problem are we solving?
+
+Note:
+- Only solve problems you have
+- Especially when you already have a working project
+- There are too many cool new tools to use everything
+
+---
+
+### What problem are we solving?
+
+- You want to bundle your javascript for performance
+- There are dependencies between modules
+- A giant list of files is hard to maintain
+
+
+vvv
+
+<style>
+\#smallcode + p + pre {
+  font-size: 5pt;
+}
+</style>
+<div id="smallcode"></div>
+``` html
+<script src="/config-variables.js"></script>
+
+<!-- build:js /scripts/common.js -->
+<script src="/bower_components/jquery/dist/jquery.js"></script>
+<script src="/bower_components/jquery-ui/ui/core.js"></script>
+<script src="/bower_components/angular/angular.js"></script>
+<script src="/bower_components/angular-i18n/angular-locale_nl-be.js"></script>
+<script src="/bower_components/lodash/lodash.js"></script>
+<script src="/bower_components/underscore.string/dist/underscore.string.js"></script>
+<script src="/bower_components/angular-cookie/angular-cookie.js"></script>
+<script src="/bower_components/angular-route/angular-route.js"></script>
+<script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="/bower_components/angular-touch/angular-touch.js"></script>
+<script src="/bower_components/angular-ui-bootstrap/src/pagination/pagination.js"></script>
+<script src="/bower_components/angular-ui-bootstrap/src/bindHtml/bindHtml.js"></script>
+<script src="/bower_components/angular-ui-bootstrap/src/position/position.js"></script>
+<script src="/bower_components/angular-ui-bootstrap/src/typeahead/typeahead.js"></script>
+<script src="/bower_components/angular-ui-bootstrap/src/modal/modal.js"></script>
+<script src="/bower_components/angular-ui-bootstrap/src/transition/transition.js"></script>
+<script src="/bower_components/angulartics/src/angulartics.js"></script>
+<script src="/bower_components/matchMedia/matchMedia.js"></script>
+
+<script src="/scripts/common/environment/environment-module.js"></script>
+<script src="/scripts/common/environment/environment-constants.js"></script>
+<script src="/scripts/common/environment/culture-filter.js"></script>
+<script src="/scripts/common/environment/currency-filter.js"></script>
+
+<script src="/scripts/common/analytics/analytics-module.js"></script>
+<script src="/scripts/common/analytics/tealium-script-service.js"></script>
+<script src="/scripts/common/analytics/divolte-script-service.js"></script>
+<script src="/scripts/common/analytics/async-script-service.js"></script>
+<script src="/scripts/common/analytics/cookie-service.js"></script>
+<script src="/scripts/common/analytics/iframe-service.js"></script>
+<script src="/scripts/common/analytics/angulartics-config-provider.js"></script>
+<script src="/scripts/common/analytics/tealium-analytics-provider.js"></script>
+<script src="/scripts/common/analytics/criteo-analytics-provider.js"></script>
+<script src="/scripts/common/analytics/google-analytics-provider.js"></script>
+<script src="/scripts/common/analytics/divolte-analytics-provider.js"></script>
+<script src="/scripts/common/analytics/facebook-analytics-provider.js"></script>
+<script src="/scripts/common/analytics/floodlight-analytics-provider.js"></script>
+<script src="/scripts/common/analytics/angulartics-debug.js"></script>
+<script src="/scripts/common/analytics/domain/product.js"></script>
+<script src="/scripts/common/analytics/domain/product-variant.js"></script>
+<script src="/scripts/common/analytics/domain/order.js"></script>
+<script src="/scripts/common/analytics/domain/order-line.js"></script>
+<script src="/scripts/common/analytics/analytics-constants.js"></script>
+
+<script src="/scripts/common/newsletter/newsletter-module.js"></script>
+<script src="/scripts/common/newsletter/newsletter-service.js"></script>
+<script src="/scripts/common/newsletter/newsletter-controller.js"></script>
+
+<script src="/scripts/common/search-bar/search-bar-module.js"></script>
+<script src="/scripts/common/search-bar/search-bar-typeahead-directive.js"></script>
+<script src="/scripts/common/search-bar/search-bar-typeahead-service.js"></script>
+
+<script src="/scripts/common/search-page/search-page-module.js"></script>
+<script src="/scripts/common/search-page/search-service.js"></script>
+<script src="/scripts/common/search-page/search-page-url-service.js"></script>
+<script src="/scripts/common/search-page/search-page-location-service.js"></script>
+<script src="/scripts/common/search-page/search-page-pagination-directive.js"></script>
+<script src="/scripts/common/search-page/category-filter-controller.js"></script>
+<script src="/scripts/common/search-page/facet-controller.js"></script>
+<script src="/scripts/common/search-page/filter-feedback-directive.js"></script>
+<script src="/scripts/common/search-page/price-filter-directive.js"></script>
+<script src="/scripts/common/search-page/product-list-directive.js"></script>
+<script src="/scripts/common/search-page/sorting-dropdown-directive.js"></script>
+<script src="/scripts/common/search-page/natural-sorting-service.js"></script>
+<script src="/scripts/common/search-page/price-directive.js"></script>
+<script src="/scripts/common/search-page/search-page-pagination-link-directive.js"></script>
+
+<script src="/scripts/common/common-module.js"></script>
+<script src="/scripts/common/amplience-area-directive.js"></script>
+<script src="/scripts/common/accordion-directive.js"></script>
+<script src="/scripts/common/api-http-request-interceptor.js"></script>
+<script src="/scripts/common/back-button-directive.js"></script>
+<script src="/scripts/common/basket-service.js"></script>
+<script src="/scripts/common/collapsible-directive.js"></script>
+<script src="/scripts/common/content-repository-service.js"></script>
+<script src="/scripts/common/cookie-controller.js"></script>
+<script src="/scripts/common/nl-user-controller.js"></script>
+<script src="/scripts/common/nl-user-modal-controller.js"></script>
+<script src="/scripts/common/current-year-directive.js"></script>
+<script src="/scripts/common/date-filter.js"></script>
+<script src="/scripts/common/form-autofill-directive.js"></script>
+<script src="/scripts/common/form-field-validation-directive.js"></script>
+<script src="/scripts/common/form-submit.js"></script>
+<script src="/scripts/common/global-error-service.js"></script>
+<script src="/scripts/common/header-directive.js"></script>
+<script src="/scripts/common/input-validation-directive.js"></script>
+<script src="/scripts/common/ip-location-service.js"></script>
+<script src="/scripts/common/mini-basket-directive.js"></script>
+<script src="/scripts/common/mobile-menu-directive.js"></script>
+<script src="/scripts/common/nav-set-active-directive.js"></script>
+<script src="/scripts/common/object-dimension-service.js"></script>
+<script src="/scripts/common/options-disabled-directive.js"></script>
+<script src="/scripts/common/product-filter.js"></script>
+<script src="/scripts/common/responsive-image-directive.js"></script>
+<script src="/scripts/common/scrollto-directive.js"></script>
+<script src="/scripts/common/select-update-wrapper-directive.js"></script>
+<script src="/scripts/common/trusted-url-filter.js"></script>
+<script src="/scripts/common/validation-service.js"></script>
+<script src="/scripts/common/product-image-directive.js"></script>
+<script src="/scripts/common/scroll-to-top-directive.js"></script>
+<script src="/scripts/common/category-toggle-view-directive.js"></script>
+```
+
+Note:
+
+- Familiar with code like this?
+
+---
+
+### Comparison to various tools
+
+- Task runners
+  - Grunt
+  - Gulp
+- Module loaders / bundlers
+  - RequireJS
+  - browserify
+  - jspm
+  - rollup.js
+
+Note:
+- Give a history of where these tools come from
+- Compare their features
+
+---
+
+### Grunt: The javascript task runner
+- Runs tasks sequentially
+- Writes intermediate files to disk
+
+<img src=img/grunt-logo.png alt="Logo grunt" width="200">
+
+Note:
+- Has anyone used this?
+- Which tasks can it do?
+  - Call a transpiler
+  - Concatenate files
+  - Call a minifier
+- Lots of configuration
+- Task declaration separate from task configuration
+- Writing to disk can get slow
+- But it works, we are still using it at wehkamp
+- Does not understand dependencies
+  - Only understands filesystem
+
+---
+
+### Gulp: The streaming build system
+
+- Define tasks ask streams
+- Don't write to disk for intermediate results
+- Tasks run parallel
+
+![Logo gulp](img/logo-gulp.png)
+
+Note:
+- Has anyone used this?
+- The configuration is easier to read
+- Runs faster due to:
+  - parallelization
+  - not writing to disk
+- Still a task runner
+  - Does not understand dependencies
+    - Only understands filesystem
+
+---
+
+### RequireJS: A JS module loader
+
+- Declare dependencies per module instead of a list of scripts
+- Loads dependencies via XHR requests in the browser
+- Only supports Asynchronous Module Definition (AMD)
+- Bundle files in build step
+- Can be used on NodeJS as well
+
+![Logo RequireJS](img/logo-requirejs.png)
+
+Note:
+- Has anyone used this?
+
+- One of the first module loaders
+  - Started in 2009
+  - Based on the dojo toolkit loader
+- Module loaders are different from task runners
+- Understand JS dependencies
+- No list of scripts with implicit dependencies
+  - Like angular module example
+
+vvv
+
+### Asynchronous Module Definition (AMD)
+
+``` javascript
+define(['jquery'] , function ($) {
+  return function () {};
+});
+```
+
+Note:
+- Has anyone used this?
+- Similar to NG DI
+- Dependencies in array
+- Function invoked with instances
+
+---
+
+### Browserify: Run NodeJS modules in the browser
+
+- Bundles files
+- Plugins which only do one thing
+  - babelify
+  - css-modulesify
+- Configuration in package.json
+- Shims for browser versions of NodeJS core libaries
+
+![Logo browserify](img/logo-browserify.png)
+
+Note:
+- Has anyone used this?
+- NodeJS modules are CommonJS modules
+- Files with require calls
+- Browserify is focussed
+  - Easy configuration
+  - Only do one thing: Unix philosophy
+- Shimmed core libs:
+  - http
+  - crypto
+  - path
+- Used by react itself
+
+---
+
+### JSPM: frictionless browser package management
+
+- Package manager which uses the SystemJS module loader
+- Loads modules from the browser just like RequireJS
+- Runs transpilation in the browser
+- Has CLI tool that automates configuration
+
+![Logo jspm](img/logo-jspm.png)
+
+Note:
+- Has anyone used this?
+- New project
+  - Is it ready yet?
+- Package manager means:
+ - Calls NPM, bower or git
+ - Has a registry of what to call when
+- SystemJS universal loader:
+  - Like RequireJS in the browser
+  - AMD, commonjs and es6 modules
+  - supports transpilation
+- All error in browser
+- Easy to set up with cli
+- Slow for big projects
+  - HTTP2 will improve
+  - JSPM server is beta
+- Standard for Angular 2
+
+---
+
+### Rollup.js: The next-generation javascript module bundler
+- Dead code elimination for ES2015 modules via tree shaking
+- Plugin to convert CommonJS to ES2015
+
+Note:
+- Has anyone used this?
+- Goal is a small bundle
+- New project
+- Questions so far?
+
+---
+
+### End of history
+- Where did webpack come from
+- Described some of the alternatives
+- Any questions so far?
+
+---
+
+### Webpack: The flexible module bundle
+
+![What is webpack](img/what-is-webpack.png)
+
+---
+
+### Webpack: The flexible module bundle
+
+- Most powerful tool
+- Both module bundler / loader
+- Webpack itself does many things
+- Extensible with plugins / loaders
+- Works with all resources
+- Powerful bundle splitting
+- Development server for incremental compilation
+
+Note:
+- Has anyone used this?
+- I have not found something it can't do
+- I really like it
+- Configuration is not as hard as some say
+  - For simple cases you don't need any config
+  - Easier to configure than Grunt
+- When making a dev / production build and run on server / client can get confusing
+- All resources includes html, images, css, fonts and icons
+- Dev server:
+  - Only load the changed files
+  - Quicker than including everything always
+
+---
+
+### Webpack demo
+
+- https://webpack.github.io/analyse/
+
+Note:
+- Also source-map explorer
+
+---
+
+### Getting started with webpack
+
+```
+mkdir training-webpack
+cd training-webpack
+npm init -y
+npm install --save-dev webpack
+npm install --save-dev http-server
+```
+
+vvv
+
+### Getting started with webpack
+
+index.html
+``` html
+<html>
+  <head>
+    <title>Hello Webpack</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="bundle.js"></script>
+  </body>
+</html>
+```
+
+vvv
+
+### Getting started with webpack
+
+index.js
+``` javascript
+var render = require('./render.js');
+
+document.getElementById('app').innerHTML = render();
+```
+
+render.js
+``` javascript
+module.exports = function () {
+  var heading = '<h1>Hello from renderer</h1>';
+  var paragraph = '<p>This is a paragraph</p>';
+  return heading + paragraph;
+}
+```
+
+vvv
+
+### Running the code
+
+```sh
+# makes locally install npm packages available on $PATH
+export PATH=./node_modules/.bin:$PATH
+
+# generates bundle.js on file change
+webpack index.js bundle.js --watch
+
+# or minified build
+webpack index.js bundle.js --watch --optimize-minimize
+
+# serves the current directory
+hs -o
+```
+
+vvv
+
+### Things to try
+
+- Edit a JS file and reload
+- Look at the contents of bundle.js
+- Import a module from npm like jQuery / lodash
+
+``` javascript
+var $ = require('jquery');
+var _template = require('lodash/template');
+```
+
+---
+
+### Loaders
+- Loaders change how Webpack will handle files
+- Allow resources other than JS to be loaded
+- Can do things like:
+  - Transpiling: `babel-loader` `postcss-loader`
+  - Moving files: `file-loader`
+  - Use CSS in JS: `style-loader`
+
+Note:
+- Webpack parses require statement or <img src> or css import
+- We'll show examples in exercises
+
+vvv
+
+### File loader example
+``` javascript
+var url = require("file!./file.png");
+```
+- copies file.png in the output directory
+- returns a url like: "/public-path/file.69e351f.png"
+
+Note:
+- Webpack parses require methods
+- Determines which loaders to use
+- Loaders can also be defined in webpack config
+
+---
+
+### Basic configuration
+
+webpack.config.js
+``` javascript
+const path = require('path');
+
+module.exports = {
+  entry: './index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
+  },
+  module: {
+    loaders: [
+      { test: /\.css$/, loader: 'style!css' },
+      { test: /\.(jpg|png|gif)$/i, loader: 'file' },
+    ]
+  }
+};
+```
+
+Note:
+- Entry is the root of dependency graph
+- Loaders define a pipeline
+- Loads right to left, just like JS functions
+  - `styleLoader(cssLoader(css))`
+- test is a regex on the full filename of resources
+- CSS-loader:
+  - interpret url / @import declarations
+  - minify css
+  - css modules
+  - camelCase selectors
+- Style-loader:
+  - Keeps the css in JS
+  - Puts the output of css-loader in script tag
+  - Ensures hot module replacement works for css
+  - You might not want this in production
+
+vvv
+
+### Add some css to our webpack project
+
+```
+npm i --save-dev css-loader style-loader
+```
+
+
+index.css
+``` css
+body {
+  margin: 40px auto;
+  max-width: 650px;
+  line-height: 1.6;
+  font-size: 18px;
+  color: #444;
+  padding: 0 10px;
+}
+```
+
+render.css
+``` css
+.render__heading {
+  line-height:1.2;
+}
+```
+
+Note:
+- Only an example
+
+vvv
+
+### Import your css in JS
+
+``` javascript
+// in index.js
+require('./index.css');
+
+// in render.js
+require('./render.css');
+```
+```html
+<!-- in index.html replace src tag with: -->
+<script src="dist/bundle.js"></script>
+```
+
+```sh
+# running with:
+webpack --watch
+```
+
+Note:
+
+- Again look at your bundle.js
+- Style-loader add a lot of JS
+- CSS is in JS
+
+---
+
+### Hot module replacement
+- Replaces modules without reloading
+- Only works when there is no state
+- Send new versions over websockets
+
+Note:
+
+- Gives you fast feedback
+- Doesn't wipe out app state like
+  - form fields
+  - opened modals
+- Works well with React not so well with Angular
+  - However with some discipline you can make it work for both
+- Css has no state
+
+vvv
+
+### Trying out HMR
+- add an input box in render.js
+
+``` sh
+npm install --save-dev webpack-dev-server
+webpack-dev-server --hot --inline
+```
+```html
+<!-- in index.html replace src tag with: -->
+<script src="bundle.js"></script>
+```
+- Browse to `http://localhost:8080`
+- Now edit some css files
+
+---
+
+### Webpack validator
+
+- Webpack doesn't validate its config
+- This results in confusing errors
+- `webpack-validator` adds much better error messages
+
+Note:
+- works with runtime type checking
+- add smarter rules as well
+- is extensible
+- Note: extend schema if non-standard config
+- Both cli and in config
+
+vvv
+
+### Add webpack-validator to you config
+
+``` sh
+npm i --save-dev webpack-validator
+```
+
+``` javascript
+var validate = require('webpack-validator');
+module.exports = validate({ /* ... your webpack config */ });
+```
+
+- Try changing `loader` to `loaders`
+
+---
+
+![Logo babel](img/logo-babel.png)
+
+vvv
+
+### Babel: Use next generation JS today
+
+- Transpilation: Convert new JS to old JS
+- Plugins for:
+  - es2015
+  - React
+  - EcmaScript proposals
+- Can transpile in memory with `babel-register`
+- Requires polyfills for library features like
+  - New Object, Array methods
+  - Promise, Set, Map
+
+
+Note:
+
+vvv
+
+### Compatibility table
+
+- https://kangax.github.io/compat-table/es6/
+- http://node.green/
+
+Note:
+- Chrome caught up
+- Can't transpile everything
+- IE11 doesn't have any es6 features
+- NodeJS 6 has almost all es6 features
+- Note no engine supports import statements
+
+vvv
+
+### Babel in production
+- Don't run in `babel-register` on production server
+- Use the babel runtime to avoid duplication of some boilerplate
+- Be careful with the babel-polyfill it is bigger than jQuery
+
+Note:
+- When running JS server-side
+- Babel generates helper methods, runtime avoid duplication
+- polyfill is big, use specific features from core-js
+
+---
+
+### Adding babel loader
+
+- Enable transpiling es2015 to es5
+- Don't run for `node_modules`
+- Write webpack config in es2015
+
+vvv
+
+### Adding babel loader
+
+
+``` sh
+npm i --save-dev babel-loader babel-core babel-preset-stage-2\
+babel-preset-es2015
+```
+
+``` javascript
+// Add to loaders in webpack config
+{
+  test: /\.js$/,
+  exclude: /node_modules/,
+  loader: 'babel'
+},
+```
+.babelrc
+
+``` json
+{
+  "presets": ["es2015", "stage-2"]
+}
+```
+
+Note:
+
+- Could configure babel in webpack config
+- Using .babelrc for babel-register webpack.config.js
+
+vvv
+
+### webpack.config.js in es2015
+
+``` sh
+mv webpack.config.js webpack.config.babel.js
+```
+
+webpack.config.js
+``` javascript
+require('babel-core/register');
+
+module.exports = require('./webpack.config.babel.js');
+```
+
+- Use es2015 features in `webpack.config.babel.js`
+
+Note:
+- es2015 like imports
+- export default
+
+---
+
+### Make a production build
+
+- Minify your javascript
+- Extract CSS file using `ExtractTextPlugin`
+- Use hashes for cache busting
+- Make sure your script with hash is part of HTML
+
+Note:
+- Cache static files indefinitely
+- Client should get updates
+- Hash in filename ensures new fetch
+
+vvv
+
+### A production config
+
+``` javascript
+import webpack from 'webpack';
+import validate from 'webpack-validator';
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+
+const production = process.env.NODE_ENV === 'production';
+
+const cssLoaders = production ?
+  ExtractTextPlugin.extract('style', 'css') :
+  'style!css';
+
+const prodPlugins = production ? [
+  // Minifies javascript
+  new webpack.optimize.UglifyJsPlugin({
+    compressor: {
+      warnings: false,
+    },
+    output: {
+      comments: false, // Also removes licences
+    },
+  }),
+  new ExtractTextPlugin('style.[contenthash:8].css', { allChunks: true }),
+] : [];
+
+
+export default validate({
+  entry: './index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.[hash:8].js',
+  },
+  module: {
+    loaders: [
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
+      { test: /\.css$/, loader: cssLoader },
+    ],
+  },
+  plugins: [
+    // Put script / css with hash in html
+    // minifies html
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'index.html'),
+      inject: 'body',
+      minify: production && {
+        collapseWhitespace: true,
+      },
+    }),
+    ...prodPlugins,
+  ],
+});
+```
+
+Note:
+- NODE_ENV do determine what to run
+- Could also make copy for production
+- DEMO
+
+---
+
+### Advanced topics
+
+- Using webpack on the server https://github.com/halt-hammerzeit/universal-webpack
+- Bundle splitting and async loading https://webpack.github.io/docs/code-splitting.html
+- Library for making production configs easier to read: https://github.com/survivejs/webpack-merge
+
+Note:
+- Split bundles for vendor or per page
+- Async loading means at runtime when needed
+
+---
+
+## Linting javascript
+
+---
+
+### Linting javascript
+- The earlier you find an error the better
+- There were various tools: jslint, jshint, jscs
+- Now the standard tool is eslint
+
+Note:
+- Don't waste time looking for errors
+- Fail fast
+- Editor integration -> highlight errors
+- First there was jslint
+- jslint really strict and not configurable
+- jshint more sensible and configurable
+- jscs checks for style errors
+
+vvv
+
+### ESLint: The pluggable linting utility for javascript and JSX
+- parses javascript and checks for bugs and style errors
+- has multiple popular standard configs
+- supports custom parsers (babel)
+- has a fix option to fix some error automatically
+
+Note:
+- eslint does what both jshint and jscs do
+- eslint is faster than both combined
+- configs are difficult to make, many rules
+- not all error can be fixed automatically
+- working on making it better:
+  - conflicts with other rules
+
+vvv
+
+### Migrating to ESLint with existing code
+There are multiple options to choose depending on the size and quality of your codebase:
+- Pick a popular style guide
+- Let ESLint inspect your code
+- Make your own style rules
+
+Note:
+- Popular styleguides have many rules
+- Updating code might take long
+- Consider using `--fix` and fixable rules easier
+- I found out about fix way too late XD
+- ESLint can automatically determine rules
+- Useful when you have existing linting
+- Making own rules is much work
+
+vvv
+
+### Advanced topics
+- Use codemods to update code automatically https://github.com/cpojer/js-codemod
+- Enable linting rules to enforce new rules like:
+  - Use arrow functions
+  - `const` and `let` instead of `var`
+  - Trailing commas
+  - Use `import` instead of `require`
+- Make your own codemod using: https://astexplorer.net/
+
+Note:
+- Codemods are really cool
+- Codemods parse JS and create updates
+- Only changes one thing, leaves rest intact
+- Enable eslint rule to enforce for new code
+- You can make your own codemods
+- Can be difficult, many edge cases
+- Use eslint output to update code yourself:
+  - Use shell script
+  - Make regex replacements
+
+vvv
+
+### Installing eslint
+``` sh
+npm i --save-dev eslint babel-eslint
+eslint --init
+# Pick "Use a popular style guide", "AirBnB" and "JavaScript"
+
+# Note some missing peer dependencies, install them:
+npm i --save-dev eslint-plugin-import eslint-plugin-jsx-a11y
+
+eslint *.js
+
+# try out:
+eslint --fix *.js
+```
+- Add to package.json scripts: `"lint": "eslint --fix *.js"`
+- Use with: `npm run lint`
+
+---
+
+## CSS modules / postCSS
+
+---
+
+### Issues with CSS
+- Selectors are global
+- Selectors cascade
+- Elements often need many selectors
+- Dependencies
+- Dead code elimination
+
+
+Note:
+- CSS was developed for styling documents
+- Todays web apps consist of components
+- Global selectors:
+  - careful to avoid name collisions
+  - can't have selectors like red, button
+- Cascading:
+  - Select elements in sub components
+- CSS is separate from components
+- Might include styling for unused components
+
+vvv
+
+### Existing solution
+``` css
+/* components/submit-button.css */
+.button { /* all styles for Normal */ }
+.button--disabled { /* overrides for Disabled */ }
+.button--error { /* overrides for Error */ }
+.button--in-progress { /* overrides for In Progress */
+```
+``` html
+<button class="button button--in-progress">Processing...</button>
+```
+
+Note:
+- Only class selectors solves the issue of cascading style
+- Use naming schemes like BEM
+- Naming schemes solve naming conflicts
+- Not solved:
+  - Dependencies
+  - Dead code elimination
+
+---
+
+### CSS modules
+- Import CSS in javascript
+- Class names have local scope
+- Compose styles
+
+<img src=img/logo-css-modules.png alt="Logo css-modules" width="250">
+
+Note:
+- Similar to JS modules, no more globals
+- Import CSS in JS:
+  - Only include used css
+  - Make CSS part of bundle splitting
+- Works in all browsers:
+- Not actually local scope, but emulation
+- Example of composition similar to SASS extends
+
+vvv
+
+### CSS modules example
+``` css
+/* components/submit-button.css */
+.normal { /* all styles for Normal */ }
+.disabled { /* all styles for Disabled */ }
+.error { /* all styles for Error */ }
+.inProgress { /* all styles for In Progress */
+```
+``` javascript
+/* components/submit-button.js */
+import styles from './submit-button.css';
+
+buttonElem.innerHTML = `<button class=${styles.normal}>
+    Submit
+</button>`;
+```
+
+``` html
+<!-- resulting DOM -->
+<button class="components_submit_button__normal__abc5436">
+  Processing...
+</button>
+```
+
+Note:
+- import styles -> style object containing class name
+- Why are these local style?
+  - You can only get the name by importing the style
+- Name mangling:
+  - Make a hash of the contents of the style in the class name
+  - Currently looks like BEM, but could be random
+- Explicit dependency between JS and CSS
+- CSS is part of the component
+
+vvv
+
+### CSS modules composition example
+``` css
+/* components/button.css */
+.common {}
+.normal { composes: common; }
+.error { composes: common; }
+```
+
+``` javascript
+import styles from './comonents/button.css';
+buttonElem.innerHTML = `<button class=${styles.normal}>
+    Submit
+</button>`;
+```
+
+``` javascript
+styles: {
+  common: "button__common__abc5436",
+  normal: "button__common__abc5436 button__normal__def6547",
+  error: "button__common__abc5436 button__error__1638bcd"
+}
+```
+
+Note:
+- CSS composes by itself:
+    - Applying multiple classes
+- Compose by applying 2 classes
+- Only need to set one class in innerHTML
+- No additional CSS generated for composition
+
+vvv
+
+### Composing across files
+```
+/* colors.css */
+.primary {
+  color: #720;
+}
+.secondary {
+  color: #777;
+}
+```
+```
+/* submit-button.css */
+.common { /* font-sizes, padding, border-radius */ }
+.normal {
+  composes: common;
+  composes: primary from "../shared/colors.css";
+}
+```
+
+Note:
+- Now normal will be 3 classes:
+  - itself
+  - common
+  - primary
+- This is really powerful:
+  - Share code
+  - Name styles yourself
+
+vvv
+
+### Next level CSS modules
+``` css
+.element {
+  composes: large from "./typography.css";
+  composes: dark-text from "./colors.css";
+  composes: padding-all-medium from "./layout.css";
+  composes: subtle-shadow from "./effect.css";
+}
+```
+
+Note:
+- Note the friendly names
+- No duplication
+- Create new styles just by composing existing styles
+
+---
+
+### CSS Modules exercise
+```javascript
+// Replace the css loader with:
+const cssLoaderConfig = 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+
+// Experiment editing localIdentName
+```
+``` css
+/* update render.css to remove BEM */
+.heading {
+  line-height:1.2;
+}
+
+.paragraph {
+  font-family: sans-serif
+}
+```
+
+Note:
+- Long string can be avoided with library
+- Enabled modules
+- importLoaders is a workaround, number of loaders after css
+- The name of css classes to be used
+
+vvv
+
+### Import the styles
+
+```javascript
+// In render.js
+import styles from './render.css';
+
+// ...
+
+const heading = `<h1 class="${styles.heading}">Hello from renderer</h1>`;
+const paragraph = `<p class="${styles.paragraph}">This is a paragraph</p>`;
+```
+
+vvv
+
+### Composition
+
+``` css
+/* typography.css */
+.default-font {
+  font-family: sans-serif
+}
+
+```
+compose default-font in render.css
+
+---
+
+### Further topics
+- Avoid long query strings https://github.com/jsdf/webpack-combine-loaders
+
+---
+
+### PostCSS: A tool for transforming CSS with JS
+- Parses CSS or CSS-like syntax
+- Transforms like:
+  - adding vendor prefixes
+  - adding experimental CSS features
+  - custom CSS extensions
+  - Minify CSS
+- Lint your CSS
+
+![Logo babel](img/logo-postcss.svg)
+
+
+Note:
+- The name says it all
+- Made possible by parsing
+- Code more readable without prefixes like `-webkit-`, `-moz-`, `-ms-`
+- cssnext run experimental CSS features
+- Add SASS like features
+
+vvv
+
+### stylint
+- Catches errors in css
+- Is a PostCSS transform
+- Gives feedback quick where browsers would just ignore rules
+
+Note:
+- Catches both css codestyle (spaces) and actual errors / typos
+- Uses the parsing of postcss
+
+vvv
+
+### Autoprefixer
+- Add prefixes if needed
+- Removes prefixes if they're not needed
+- Can target browsers with http://caniuse.com queries:
+  - `last 2 versions`
+  - `> 5% in IN`
+  - `not ie <= 8`
+
+Note:
+- Prefixes are a difficult problem
+- Styling just might break in some browsers
+- caniuse.com is really useful + demo:
+  - border-radius
+  - flex
+  - IE9 is gone, fallen below 0.5%
+
+vvv
+
+
+### Autoprefixer example
+``` css
+:fullscreen a {
+    display: flex
+}
+```
+
+``` css
+webkit-full-screen a {
+    display: -webkit-box;
+    display: flex
+}
+:-moz-full-screen a {
+    display: flex
+}
+:-ms-fullscreen a {
+    display: -ms-flexbox;
+    display: flex
+}
+:fullscreen a {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex
+}
+```
+
+Note:
+- difficult to figure out yourself
+- only adding whats needed reduces file size
+
+vvv
+
+### cssnext var example
+``` css
+:root {
+  --fontSize: 12pt;
+}
+
+.button {
+  font-size: var(--fontSize)
+}
+```
+
+``` css
+.button {
+  font-size: 12pt
+}
+```
+
+Note:
+- cssnext implements actual standards
+- always prefer standards
+- Still have to get used to the var syntax
+- Check out other cool features like:
+  - nesting
+  - color() function
+  - custom selectors
+
+vvv
+
+### Other transforms to check out
+- Lost grid: https://github.com/peterramsing/lost
+- Precss, SASS in poscss: https://github.com/jonathantneal/precss
+- PostCSS-js, write CSS with JS: https://github.com/postcss/postcss-js
+- Minification: https://github.com/leodido/postcss-clean or https://github.com/lahmatiy/postcss-csso
+
+Note:
+- Generate a whole grid with simple CSS
+- precss is a collection of postcss plugins which give sass and some cssnext features
+- If you need advanced logic in css, consider postcss-js
+- There a multiple minifiers, there are benchmarks
+
+---
+
+### PostCSS exercise
+``` sh
+npm i --save-dev postcss-loader stylelint \
+stylelint-config-standard autoprefixer precss
+```
+
+``` javascript
+// in webpack.config.babel.js
+import stylelint from 'stylelint';
+import precss from 'precss';
+import autoprefixer from 'autoprefixer';
+
+// Add to css loader
+const cssLoaderConfig = '{{ existing loaders }}!postcss'
+
+// update prodPlugins for viewing styles easily
+const prodPlugins = production ? [
+  new ExtractTextPlugin('style.css', { allChunks: true }),
+] : [];
+
+// Add PostCSS config to webpack config
+{
+  plugins: ...,
+  postcss: () => [
+    stylelint,
+    autoprefixer({ browsers: ['> 0.5% in NL'] }),
+    lost,
+  ],
+}
+```
+
+vvv
+
+``` javascript
+//create styelelint.config.js
+
+module.exports = {
+  extends: 'stylelint-config-standard',
+};
+```
+
+``` sh
+NODE_ENV=production webpack-dev-server
+# browse to http://localhost:8080/style.css
+```
+
+vvv
+
+### Try out PostCSS features
+``` css
+/* add somewhere to see prefixes */
+display: flex;
+```
+
+- Use some of the features listed here: https://github.com/jonathantneal/precss
+- Test stylelint errors:
+  - Change the indentation of a css file
+  - Remove newline between some rulesets
+  - Try adding:
+
+  ```
+  @import url(not-existing.css);
+  background-image: url(not-existing.svg);
+  font-size: 12pixels
+  ```
+
+
+---
+
+###Mocha
+```sh
+npm i --save-dev mocha chai sinon sinon-chai
+```
+``` js
+// Add to package.json at the scripts section
+"test": "mocha --opts test-config/mocha.opts",
+"test:watch": "mocha --opts test-config/mocha.opts --watch",
+```
+
+`test-config/mocha.opts`
+
+```
+--compilers js:babel-core/register
+--require test-config/mochasetup.js
+**/__tests__/*[Ss]pec.js
+```
+
+vvv
+
+`test-config/mochasetup.js`
+
+```js
+import chai, { expect } from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+
+chai.use(sinonChai);
+
+global.expect = expect;
+global.sinon = sinon;
+```
+
+`__tests__/mocha-sinon-setup-spec.js`
+
+```js
+describe('Mocha and sinon setup', () => {
+  it('sinon should integrate with chai', () => {
+    const mySpy = sinon.spy();
+    mySpy('my args');
+    expect(mySpy).to.have.been.calledWithExactly('my args');
+  });
+});
+```
+
+---
+
+### Sources
+- http://glenmaddern.com/articles/css-modules
+- https://speakerdeck.com/vjeux/react-css-in-js
