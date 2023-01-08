@@ -20,7 +20,7 @@ https://twitter.com/mikewoudenberg
 
 ### Programme
 
-- History of module bundling / loading
+- Brief history of web development
 - Bundling tools
 - Monorepo tools
 - Quality of life tools
@@ -70,7 +70,7 @@ vvv
 
 ### Immediately-Invoked Function Expression (IIFE)
 
-```js[1,14|2-13]
+```js[1,14|2-13|2|4,7,10]
 var counter = (function () {
   var i = 0;
   return {
@@ -229,8 +229,17 @@ Note:
 
 ---
 
-### First generation improvements
+### First improvements
 
+<style>
+.grey {
+  color: grey;
+}
+</style>
+
+<div class="grey">
+
+- Yeoman
 - Task runners
   - Grunt
   - Gulp
@@ -239,11 +248,9 @@ Note:
   - browserify
   - jspm
 
+</div>
 Note:
 
 - Give a history of where these tools come from
 - Compare their features
-
----
-
-### Second generation
+- Give a big fat warning about when you encounter them
