@@ -48,7 +48,7 @@ Note:
 
 ### Esbuild
 
-![ESBuild logo](img/esbuild.png)
+<img src="img/esbuild.png" alt="ESBuild logo" width="200" />
 
 An extremely fast javascript bundler
 
@@ -62,6 +62,6 @@ Note:
 
 ### Vite
 
-![Vite logo](img/vite.png)
+<img src="img/vite.png" alt="Vite logo" width="200" />
 
 Next generation frontend tooling

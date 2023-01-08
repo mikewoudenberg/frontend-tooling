@@ -36,9 +36,22 @@ Note:
 
 ### Testing library
 
-Helper library to write better tests by Kent C. Dodds.
+<blockquote>The more your tests resemble the way your software is used, the more confidence they can give you.</blockquote>
+- Key helpers: `render`, `screen` and `userEvent`
 
-- "The more your tests resemble the way your software is used, the more confidence they can give you."
+Note:
+
+- Describe what the key helpers do
+
+---
+
+### Testing library
+
+- Open your project
+- run `npm install --save-dev @testing-library/react @testing-library/user-event`
+- Create a test for the component we made earlier using testing library
+  - Simulate clicking on the button
+  - Assert that the text in the textbox changed
 
 ---
 
@@ -57,3 +70,5 @@ Helper library for simulating backend servers
 End to end testing library
 
 Note:
+
+- Briefly compare to Selenium based tools
