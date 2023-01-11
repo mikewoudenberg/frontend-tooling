@@ -49,3 +49,21 @@ Note:
 
 - Very useful to prevent common coding mistakes
 - Use it wisely, with great power comes great responsibility
+
+vvv
+
+### Eslint in practice
+
+- Ensure your IDE supports Eslint
+- Open app.tsx in your project and type something like the following in your function body
+
+```js
+if ("" == 0) {
+  return;
+}
+```
+
+Note:
+
+- What would be good to lint?
+- What wouldn't?

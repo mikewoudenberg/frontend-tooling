@@ -142,6 +142,7 @@ Note:
 - Very useful tool for building a quick standalone webapp
 - Does image compression, minification, transpilation
 - support React out of the box and Vue via a plugin
+- Written in Rust
 
 vvv
 
@@ -216,6 +217,10 @@ npx parcel build
 - Esbuild
 - Vite
 
+Note:
+
+- Transition from javascript based tooling to "native" (Rust, Go etc) tooling
+
 ---
 
 ### Esbuild
@@ -229,6 +234,7 @@ Note:
 - Up to 100x faster than webpack 5
 - Foundational tool for current generation of fast bundlers
 - More a utility than an end user tool
+- Written in Go
 
 ---
 
@@ -237,3 +243,44 @@ Note:
 <img src="img/vite.png" alt="Vite logo" width="200" />
 
 Next generation frontend tooling
+
+---
+
+### Vite
+
+- Uses esbuild for module transformation
+- Uses Rollup for production bundling
+- Highly pluggable architecture following Rollup's plugin architecture
+- Still very much in flux so not everything may be supported yet
+
+Note:
+
+- Written in Go
+- Bundling still faster due to waterfall of imports and minification
+
+vvv
+
+### Getting started with Vite
+
+```sh
+npm create vite@latest training-vite -- --template react-ts
+cd training-vite
+npm install
+```
+
+vvv
+
+### Running the code
+
+```sh
+
+# run the dev server
+npm run dev
+
+# Create a production build
+npm run build
+
+# Serve the generated production build
+npm run preview
+
+```

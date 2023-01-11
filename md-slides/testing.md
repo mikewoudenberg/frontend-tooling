@@ -2,6 +2,7 @@
 
 - Jest
 - Testing library
+- Mock Service Worker
 - Cypress
 
 ---
@@ -27,7 +28,6 @@ Writing your first jest test
 
 - Use `describe(...` to state what component you are testing
 - Use `it ('should ...` to describe what behaviour you are asserting in the test
-- (Optionally)
 
 ---
 
@@ -75,26 +75,28 @@ vvv
 
 Api mocking of the next generation
 
-Note:
+---
+
+### Mock service worker
 
 - Tool to mock backend servers
 - For Unit tests, but also for storybook or cypress
+- Can do both REST mocking as GraphQL mocking
 
 vvv
 
 ### Mock Service Worker
 
-- Run `npm install --save-dev msw`
+- Run `npm install --save-dev msw whatwg-fetch`
 - Create the file `src/mocks/handlers.js`
 - Fill it with:
 
 ```js
+import { rest } from "msw";
+
 export const handlers = [
-  rest.post("/login", (req, res, ctx) => {
-    return res(
-      // Respond with a 200 status code
-      ctx.status(200)
-    );
+  rest.get("https://swapi.dev/api/people/1", (req, res, ctx) => {
+    return res(ctx.json({ name: "Anakin Skywalker" }));
   }),
 ];
 ```
@@ -102,6 +104,34 @@ export const handlers = [
 vvv
 
 ### Mock Service Worker
+
+<style>
+  .reveal pre.code-wrapper {
+    font-size: 0.4em;
+  }
+</style>
+
+```ts
+import { appData } from "./app-data";
+import "whatwg-fetch";
+import { setupServer } from "msw/node";
+import { handlers } from "../mocks/handlers";
+
+const server = setupServer(...handlers);
+
+beforeAll(() => {
+  server.listen();
+});
+afterAll(() => {
+  server.close();
+});
+
+describe("appData", () => {
+  it("should work", async () => {
+    expect(await appData()).toEqual("Anakin Skywalker");
+  });
+});
+```
 
 ---
 

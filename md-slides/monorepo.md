@@ -65,3 +65,48 @@ vvv
 - Explore the project a bit to see what got generated
 - Commit the current state of your project to git (do this after every step to make life easier)
 - Run `nx g @nrwl/react:app <name of second app> --bundler=vite` to generate a vite based react app
+- Run `nx g lib app-data`
+- Select `Workspace library`
+- Select `vite` as bundler
+- Select `Vitest` as testrunner
+
+vvv
+
+### Your first NX project
+
+Change the generated `app-data.ts` file to this:
+
+```ts
+export async function appData(): Promise<string> {
+  const response = await fetch("https://swapi.dev/api/people/1");
+  if (!response.ok) {
+    throw new Error("Failed to fetch");
+  }
+  const person = await response.json();
+  return person.name;
+}
+```
+
+vvv
+
+### Add the following to your app.tsx
+
+```tsx[5,6,9-12,16]
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import styles from './app.module.css';
+
+import { Route, Routes, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { appData } from '@sample/app-data';
+
+export function App() {
+  const [name, setName] = useState('');
+  useEffect(() => {
+    appData().then(fetchedName => setName(fetchedName))
+  }, []);
+
+  return (
+    <>
+      <div>{name}</div>
+      ...
+```
