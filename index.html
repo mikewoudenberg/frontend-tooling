@@ -54,6 +54,11 @@
           data-separator="^---"
           data-separator-vertical="^vvv"
         ></section>
+        <section
+          data-markdown="md-slides/quiz.md"
+          data-separator="^---"
+          data-separator-vertical="^vvv"
+        ></section>
       </div>
     </div>
 
@@ -67,6 +72,7 @@
       // - https://revealjs.com/config/
       Reveal.initialize({
         hash: true,
+        slideNumber: "c/t",
 
         // Learn about plugins: https://revealjs.com/plugins/
         plugins: [RevealMarkdown, RevealHighlight, RevealNotes],

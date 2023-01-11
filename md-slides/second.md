@@ -9,21 +9,24 @@ Note:
 - Give a quick summary of what they are
 - We'll dive into the details later
 
-### Webpack: The flexible module bundle
+---
 
-![What is webpack](img/what-is-webpack.png)
+### Webpack
+
+<img src="img/webpack.png" alt="Webpack logo" width="200" />
+
+Static module bundler
 
 ---
 
-### Webpack: The flexible module bundle
+### Webpack
 
-- Most powerful tool
+- Very powerful tool
 - Both module bundler / loader
-- Webpack itself does many things
 - Extensible with plugins / loaders
-- Works with all resources
+- Works with almost resource types
 - Powerful bundle splitting
-- Development server for incremental compilation
+- Development server for incremental compilation and hot reloading
 
 Note:
 
@@ -36,6 +39,175 @@ Note:
 - Dev server:
   - Only load the changed files
   - Quicker than including everything always
+
+vvv
+
+## Getting started with webpack
+
+```
+mkdir training-webpack
+cd training-webpack
+npm init -y
+npm install --save-dev webpack http-server
+```
+
+vvv
+
+### Getting started with webpack
+
+index.html
+
+```html
+<html>
+  <head>
+    <title>Hello Webpack</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="dist/main.js"></script>
+  </body>
+</html>
+```
+
+vvv
+
+### Getting started with webpack
+
+index.js
+
+```javascript
+var render = require("./render.js");
+
+document.getElementById("app").innerHTML = render();
+```
+
+render.js
+
+```javascript
+module.exports = function () {
+  var heading = "<h1>Hello from renderer</h1>";
+  var paragraph = "<p>This is a paragraph</p>";
+  return heading + paragraph;
+};
+```
+
+vvv
+
+### Running the code
+
+```sh
+
+# generates dist/main.js on file change
+npx webpack watch ./index.js --mode=development
+
+
+# or minified build
+npx webpack watch ./index.js --mode=production
+
+# serves the current directory and opens a browser
+npx http-server -o
+```
+
+vvv
+
+### Things to try
+
+- Edit a JS file and reload
+- Look at the contents of bundle.js
+- Import a module from npm like jQuery / lodash
+
+```javascript
+var $ = require("jquery");
+var _template = require("lodash/template");
+```
+
+---
+
+### Parcel
+
+<img src="img/parcel.png" alt="Parcel logo" width="200" />
+
+The Zero configuration build tool
+
+---
+
+### Parcel
+
+- Supports a lot of diferent resources
+- Almost no configuration required
+- Can be customized if needed
+
+Note:
+
+- Very useful tool for building a quick standalone webapp
+- Does image compression, minification, transpilation
+- support React out of the box and Vue via a plugin
+
+vvv
+
+## Getting started with Parcel
+
+```sh
+mkdir training-parcel
+cd training-parcel
+npm init -y
+# manually remove main: "index.js" from the generated package.json
+npm install --save-dev parcel
+```
+
+vvv
+
+## getting started with Parcel
+
+index.html
+
+```html
+<html>
+  <head>
+    <title>My First Parcel App</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="index.js" type="module"></script>
+  </body>
+</html>
+```
+
+vvv
+
+## getting started with Parcel
+
+index.js
+
+```javascript
+var render = require("./render.js");
+
+document.getElementById("app").innerHTML = render();
+```
+
+render.js
+
+```javascript
+module.exports = function () {
+  var heading = "<h1>Hello from renderer</h1>";
+  var paragraph = "<p>This is a paragraph</p>";
+  return heading + paragraph;
+};
+```
+
+vvv
+
+### Running the code
+
+```sh
+
+# start dev server and open browser
+npx parcel index.html --open
+
+# Produce a minified build
+npx parcel build
+
+```
 
 ---
 
