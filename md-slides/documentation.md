@@ -8,7 +8,6 @@ Note:
 
 - Storybook more workshop vs Styleguidist more store front
 - Vitebook still beta
-- Tell the story of Norbert an Gert
 
 ---
 
@@ -16,7 +15,20 @@ Note:
 
 ![Storybok logo](img/storybook.png)
 
-Tool to develop components in isolation
+Build UIs without the grunt work
+
+---
+
+### Storybook
+
+- Build your components in an isolated environment
+- Generate documentation about your components
+- Build a living style/component guide
+
+Note:
+
+- Tell the story of Norbert an Gert
+- Storybook application still webpack based. Components can be loaded using vite
 
 vvv
 
