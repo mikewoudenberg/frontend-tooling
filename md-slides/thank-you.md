@@ -1,4 +1,4 @@
-### Thank you!
+# Thank you!
 
 ---
 

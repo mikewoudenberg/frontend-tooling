@@ -107,6 +107,6 @@ export function App() {
 
   return (
     <>
-      <div>{name}</div>
+      <h1>{name}</h1>
       ...
 ```

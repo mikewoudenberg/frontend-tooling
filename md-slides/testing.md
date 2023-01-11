@@ -26,8 +26,18 @@ vvv
 
 Writing your first jest test
 
-- Use `describe(...` to state what component you are testing
-- Use `it ('should ...` to describe what behaviour you are asserting in the test
+```ts
+// sum.spec.ts
+function sum(a: number, b: number) {
+  return a + b;
+}
+
+describe("The sum function", () => {
+  it("should add two numbers", () => {
+    expect(sum(1, 2)).toBe(3);
+  });
+});
+```
 
 ---
 
@@ -141,6 +151,50 @@ describe("appData", () => {
 
 End to end testing library
 
+---
+
+### Cypress
+
+- Complete end to end testing solution
+- Fast, hot reload, easy debugging
+- Can also do component testing
+- Cross browser testing
+- Automagically waits for elements to appear
+
 Note:
 
 - Briefly compare to Selenium based tools
+- Cross browser limited to chromium based browsers and firefox. Only experimental support for Safari
+
+vvv
+
+### Getting started with Cypress
+
+Start cypress for your app in headed mode:
+
+```sh
+nx e2e <yourapp>-e2e --watch
+```
+
+vvv
+
+Rewrite `app.cy.ts` to be:
+
+```ts
+import { getGreeting } from "../support/app.po";
+
+describe("vite-sample-app", () => {
+  beforeEach(() => {
+    cy.intercept("https://swapi.dev/api/people/1", { name: "Leia Skywalker" });
+    return cy.visit("/");
+  });
+
+  it("should display Leia", () => {
+    getGreeting().contains("Leia Skywalker");
+  });
+});
+```
+
+Note:
+
+- Describe best practices
