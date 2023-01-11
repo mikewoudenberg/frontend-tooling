@@ -19,6 +19,16 @@ Note:
 - Originated as React specific, but can be used for any type of testing
 - since 2014
 
+vvv
+
+### Jest
+
+Writing your first jest test
+
+- Use `describe(...` to state what component you are testing
+- Use `it ('should ...` to describe what behaviour you are asserting in the test
+- (Optionally)
+
 ---
 
 ### Testing library
@@ -37,13 +47,17 @@ Note:
 ### Testing library
 
 <blockquote>The more your tests resemble the way your software is used, the more confidence they can give you.</blockquote>
-- Key helpers: `render`, `screen` and `userEvent`
+
+- Key helpers:
+  - `render`
+  - `screen`
+  - `userEvent`
 
 Note:
 
 - Describe what the key helpers do
 
----
+vvv
 
 ### Testing library
 
@@ -59,7 +73,35 @@ Note:
 
 ![MSW logo](img/msw.jpeg)
 
-Helper library for simulating backend servers
+Api mocking of the next generation
+
+Note:
+
+- Tool to mock backend servers
+- For Unit tests, but also for storybook or cypress
+
+vvv
+
+### Mock Service Worker
+
+- Run `npm install --save-dev msw`
+- Create the file `src/mocks/handlers.js`
+- Fill it with:
+
+```js
+export const handlers = [
+  rest.post("/login", (req, res, ctx) => {
+    return res(
+      // Respond with a 200 status code
+      ctx.status(200)
+    );
+  }),
+];
+```
+
+vvv
+
+### Mock Service Worker
 
 ---
 

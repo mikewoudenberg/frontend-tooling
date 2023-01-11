@@ -26,6 +26,7 @@ https://twitter.com/mikewoudenberg
 - Quality of life tools
 - Test tools
 - Documentation tools
+- Other useful tools
 
 Note:
 
@@ -112,6 +113,8 @@ Note:
 - A giant list of files is hard to maintain
 
 vvv
+
+A blast from the past:
 
 <pre>
   <code>

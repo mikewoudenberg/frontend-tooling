@@ -32,7 +32,10 @@ vvv
 ### Prettier
 
 - Ensure you have prettier installed in your IDE
-- Create a new file in your react app
+- Create a new component in your react app (a Button with a label and onClick handler for example)
+- Try to write it in a single line
+- Save the file
+- 🪄!
 
 ---
 
