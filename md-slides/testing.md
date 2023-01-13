@@ -77,6 +77,38 @@ vvv
   - Simulate clicking on the button
   - Assert that the text in the textbox changed
 
+vvv
+
+Button.js
+
+```js
+import { useState } from "react";
+
+interface Props {
+  onClick: () => void;
+  title: string;
+}
+
+export default function Button({ onClick, title }: Props) {
+  const [clicked, setClicked] = useState(false);
+
+  return (
+    <div>
+      I was clicked {clicked}
+      <button
+        type="button"
+        onClick={() => {
+          setClicked(true);
+          onClick();
+        }}
+      >
+        {title}
+      </button>
+    </div>
+  );
+}
+```
+
 ---
 
 ### Mock Service Worker

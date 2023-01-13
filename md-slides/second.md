@@ -48,7 +48,7 @@ vvv
 mkdir training-webpack
 cd training-webpack
 npm init -y
-npm install --save-dev webpack http-server
+npm install --save-dev webpack http-server webpack-cli
 ```
 
 vvv
@@ -113,12 +113,22 @@ vvv
 ### Things to try
 
 - Edit a JS file and reload
-- Look at the contents of bundle.js
+- Look at the contents of dist/main.js
 - Import a module from npm like jQuery / lodash
 
 ```javascript
 var $ = require("jquery");
 var _template = require("lodash/template");
+```
+
+vvv
+
+### Going all in
+
+```sh
+# create a webpack config
+npx webpack init
+npm run serve
 ```
 
 ---
@@ -206,7 +216,7 @@ vvv
 npx parcel index.html --open
 
 # Produce a minified build
-npx parcel build
+npx parcel build index.html
 
 ```
 

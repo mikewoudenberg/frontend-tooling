@@ -77,7 +77,7 @@ vvv
 Rename the original App function to OriginalApp and insert this at the start
 
 ```ts
-const { data, error } = useQuery("nameQuery", appData);
+const { data, error } = useQuery(["nameQuery"], appData);
 if (error) {
   return <div>Failed to load</div>;
 }

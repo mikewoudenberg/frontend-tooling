@@ -55,7 +55,7 @@ npx create-nx-workspace@latest
 - Give the app in the project a nice name
 - Choose `css` as your stylesheet format
 - Opt out of distributed builds
-- Run `npm start` in the generated folder
+- Run `nx serve <your app>` in the generated folder
 
 vvv
 
@@ -97,7 +97,7 @@ import styles from './app.module.css';
 
 import { Route, Routes, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { appData } from '@sample/app-data';
+import { appData } from '@<name of your project>/app-data';
 
 export function App() {
   const [name, setName] = useState('');
